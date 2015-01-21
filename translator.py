@@ -106,6 +106,8 @@ def secondPass(lines, labels):
                 line.params[j] = int(p[1:])
             elif p[0] == '$':
                 line.params[j] = int(p[1:], 16)
+            elif p.isdigit():
+                line.params[j] = int(p)
         prg[line.addr] = line
     return prg
 

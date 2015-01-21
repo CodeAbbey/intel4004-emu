@@ -1,5 +1,6 @@
 import sys
 import translator
+import executor
 
 def loadSource():
     if len(sys.argv) < 2:
@@ -14,7 +15,8 @@ def main():
     try:
         src = loadSource()
         prg = translator.translate(src)
-        print(prg)
+        cpu = executor.Executor()
+        cpu.run(prg)
     except Exception as e:
         sys.stderr.write("Error: %s\n" % e)
 
