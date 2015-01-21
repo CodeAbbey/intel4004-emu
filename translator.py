@@ -54,7 +54,7 @@ class Line():
         try:
             size, params = Instruction.opcodes[self.opcode]
         except KeyError:
-            raise Exception("Unknown instruction %s %s" % (instr, inTheLine))
+            raise Exception("Unknown instruction %s %s" % (self.opcode, inTheLine))
         if len(self.parts) != params + 1:
             raise Exception("Expected %d parameters %s" % (params, inTheLine))
         self.size = size

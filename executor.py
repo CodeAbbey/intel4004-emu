@@ -10,7 +10,6 @@ class Executor:
     def run(self, prg):
         while self.ip in prg:
             self.step(prg[self.ip])
-        self.printRegs()
     
     def printRegs(self):
         print(' '.join([str(r) for r in self.regs]))
@@ -45,7 +44,8 @@ class Executor:
         self.cy ^= 1
         
     def i_dac(self, params):
-        self.aac = (self.acc - 1) & 0xF
+        self.acc = (self.acc - 1) & 0xF
+        self.cy = 1 if self.acc != 15 else 0
     
     def i_fim(self, params):
         p = params[0] & 0xE
@@ -55,12 +55,26 @@ class Executor:
             
     def i_iac(self, params):
         self.acc = (self.acc + 1) & 0xF
+        self.cy = 1 if self.acc == 0 else 0
     
     def i_jcn(self, params):
-        raise Exception('Unsupported')
+        op = params[0]
+        if op not in ['c0', 'c1', 'az', 'an']:
+            raise Exception("Unknown jump condition '%s'!" % op);
+        if op[0] == 'c':
+            if str(self.cy) != op[1]:
+                return
+        elif op == 'az' and self.acc != 0:
+            return
+        elif op == 'an' and self.acc == 0:
+            return
+        self.ip = params[1]
     
     def i_jms(self, params):
         self.stack.append(self.ip)
+        self.ip = params[0]
+    
+    def i_jun(self, params):
         self.ip = params[0]
     
     def i_inc(self, params):
@@ -72,9 +86,6 @@ class Executor:
         self.regs[p] = (self.regs[p] + 1) & 0xF
         if self.regs[p] != 0:
             self.ip = params[1]
-    
-    def i_jun(self, params):
-        self.ip = params[0]
     
     def i_ld(self, params):
         self.acc = self.regs[params[0]]
@@ -104,7 +115,7 @@ class Executor:
         self.cy = self.acc >> 4
         self.acc &= 0xF
     
-    def i_sub(self, params):
+    def i_tcc(self, params):
         self.acc = self.cy
         self.cy = 0
     

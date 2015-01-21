@@ -11,12 +11,18 @@ def loadSource():
     f.close()
     return lines
 
+def fetchState(cpu):
+    for i in range(2, len(sys.argv)):
+        cpu.regs[i - 2] = int(sys.argv[i])
+
 def main():
     try:
         src = loadSource()
         prg = translator.translate(src)
         cpu = executor.Executor()
+        fetchState(cpu)
         cpu.run(prg)
+        cpu.printRegs()
     except Exception as e:
         sys.stderr.write("Error: %s\n" % e)
 
