@@ -85,22 +85,30 @@ class Executor:
     def i_nop(self, params):
         pass
     
+    def i_ral(self, params):
+        self.acc = (self.acc << 1) + self.cy
+        self.cy = self.acc >> 4
+        self.acc &= 0xF
+    
+    def i_rar(self, params):
+        cy = self.acc & 1
+        self.acc = (self.acc >> 1) + (self.cy << 3)
+        self.cy = cy
+    
     def i_stc(self, params):
         self.cy = 1
+    
+    def i_sub(self, params):
+        p = params[0]
+        self.acc = self.acc + 16 - self.regs[p] - self.cy
+        self.cy = self.acc >> 4
+        self.acc &= 0xF
+    
+    def i_sub(self, params):
+        self.acc = self.cy
+        self.cy = 0
     
     def i_xch(self, params):
         p = params[0]
         self.regs[p], self.acc = self.acc, self.regs[p]
-    
-    
-comment = """
-        'sub': (1, 1),
-        'clb': (1, 0),
-        'clc': (1, 0),
-        'cmc': (1, 0),
-        'cma': (1, 0),
-        'ral': (1, 0),
-        'rar': (1, 0),
-        'tcc': (1, 0),
-        'stc': (1, 0),
-"""
+
