@@ -1,4 +1,4 @@
-class Executor:
+class Executor(object):
     
     def __init__(self):
         self.acc = 0

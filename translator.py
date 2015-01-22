@@ -1,4 +1,4 @@
-class Instruction():
+class Instruction(object):
     opcodes = {
         'nop': (1, 0),
         'jcn': (2, 2),
@@ -33,7 +33,7 @@ class Instruction():
         'sbm': (1, 0),
     }
 
-class Line():
+class Line(object):
     
     def __init__(self, index, text):
         self.index = index
