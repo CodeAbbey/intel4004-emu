@@ -11,10 +11,6 @@ class Executor:
         while self.ip in prg:
             self.step(prg[self.ip])
     
-    def printRegs(self):
-        print(' '.join([str(r) for r in self.regs]))
-        print("acc=%d, cy=%d, ip=%d" % (self.acc, self.cy, self.ip))
-    
     def step(self, line):
         self.ip += line.size
         cmd = getattr(self, 'i_' + line.opcode)
@@ -71,8 +67,16 @@ class Executor:
         self.ip = params[1]
     
     def i_jms(self, params):
-        self.stack.append(self.ip)
-        self.ip = params[0]
+        addr = params[0]
+        if addr < 0x300:
+            self.stack.append(self.ip)
+            self.ip = params[0]
+        else:
+            try:
+                subr = getattr(self, "c_%0.3x" % addr)
+            except AttributeError:
+                raise Exception("No custom subroutine for address %0.3x was defined!" % addr)
+            subr()
     
     def i_jun(self, params):
         self.ip = params[0]
@@ -122,4 +126,3 @@ class Executor:
     def i_xch(self, params):
         p = params[0]
         self.regs[p], self.acc = self.acc, self.regs[p]
-

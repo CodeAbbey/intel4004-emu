@@ -1,6 +1,16 @@
 import sys
 import translator
 import executor
+import consolex
+
+class EnhancedExecutor(executor.Executor, consolex.Consolex):
+    
+    def printRegs(self):
+        print(' '.join([str(r) for r in self.regs]))
+        print("acc=%d, cy=%d, ip=%d" % (self.acc, self.cy, self.ip))
+    
+    def c_3ff(self):
+        self.printRegs()
 
 def loadSource():
     if len(sys.argv) < 2:
@@ -19,10 +29,9 @@ def main():
     try:
         src = loadSource()
         prg = translator.translate(src)
-        cpu = executor.Executor()
+        cpu = EnhancedExecutor()
         fetchState(cpu)
         cpu.run(prg)
-        cpu.printRegs()
     except Exception as e:
         sys.stderr.write("Error: %s\n" % e)
 

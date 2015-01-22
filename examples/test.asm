@@ -27,4 +27,4 @@ xch r0              ; exchange acc to r0
 jun main_loop       ; jump to main_loop
 
 end:
-nop                 ; do nothing
+jms $3ff            ; call custom subroutine for printing regs
