@@ -3,7 +3,8 @@ import sys
 class Consolex:
     
     def c_3f0(self):
-        v = ord(sys.stdin.read(1))
+        ch = sys.stdin.read(1)
+        v = ord(ch) if len(ch) > 0 else 0
         self.regs[1] = v & 0xF
         self.regs[0] = v >> 4
 

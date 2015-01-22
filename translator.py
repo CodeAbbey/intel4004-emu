@@ -23,6 +23,14 @@ class Instruction():
         'tcc': (1, 0),
         'dac': (1, 0),
         'stc': (1, 0),
+        'daa': (1, 0),
+        'tcs': (1, 0),
+
+        'src': (1, 1),
+        'wrm': (1, 0),
+        'rdm': (1, 0),
+        'adm': (1, 0),
+        'sbm': (1, 0),
     }
 
 class Line():

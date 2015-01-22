@@ -4,6 +4,8 @@ class Executor:
         self.acc = 0
         self.regs = [0] * 16
         self.cy = 0
+        self.memory = [0] * 256
+        self.dp = 0
         self.ip = 0
         self.stack = []
     
@@ -19,6 +21,11 @@ class Executor:
     def i_add(self, params):
         p = params[0]
         self.acc = self.acc + self.regs[p] + self.cy
+        self.cy = self.acc >> 4
+        self.acc &= 0xF
+        
+    def i_adm(self, params):
+        self.acc = self.acc + self.memory[self.dp] + self.cy
         self.cy = self.acc >> 4
         self.acc &= 0xF
         
@@ -38,7 +45,14 @@ class Executor:
         
     def i_cmc(self, params):
         self.cy ^= 1
-        
+    
+    def i_daa(self, params):
+        if acc >= 10:
+            self.cy = 1
+            self.acc -= 10
+        else:
+            self.cy = 0
+    
     def i_dac(self, params):
         self.acc = (self.acc - 1) & 0xF
         self.cy = 1 if self.acc != 15 else 0
@@ -110,6 +124,13 @@ class Executor:
         self.acc = (self.acc >> 1) + (self.cy << 3)
         self.cy = cy
     
+    def i_rdm(self, params):
+        self.acc = self.memory[self.dp]
+    
+    def i_src(self, params):
+        p = params[0] & 0xE
+        self.dp = (self.regs[p] << 4) + self.regs[p + 1]
+    
     def i_stc(self, params):
         self.cy = 1
     
@@ -119,9 +140,21 @@ class Executor:
         self.cy = self.acc >> 4
         self.acc &= 0xF
     
+    def i_sbm(self, params):
+        self.acc = self.acc + 16 - self.memory[self.dp] - self.cy
+        self.cy = self.acc >> 4
+        self.acc &= 0xF
+    
     def i_tcc(self, params):
         self.acc = self.cy
         self.cy = 0
+    
+    def i_tcs(self, params):
+        self.acc = 9 + self.cy
+        self.cy = 0
+    
+    def i_wrm(self, params):
+        self.memory[self.dp] = self.acc
     
     def i_xch(self, params):
         p = params[0]
