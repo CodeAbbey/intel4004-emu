@@ -72,7 +72,7 @@ class TestASM(unittest.TestCase):
             '''
         self.assertEqual('5 0 7 0 0 0 0 0 0 0 0 0 0 0 0 0', self.run_assembly(asm))
 
-    def test_wiki_example5(self):
+    def test_wiki_example6(self):
         asm = '''\
             ldm 0
             xch r0
