@@ -47,7 +47,7 @@ class Executor(object):
         self.cy ^= 1
     
     def i_daa(self, params):
-        if acc >= 10:
+        if self.acc >= 10:
             self.cy = 1
             self.acc -= 10
         else:
