@@ -111,6 +111,8 @@ class TestStrExecutorFacade(unittest.TestCase):
                          cpu.run('8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0').regs2str_ex)
         self.assertEqual('8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0, acc=0, cy=1',
                          cpu.run(clear=False).regs2str_ex)
+        self.assertEqual('8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0, acc=9, cy=0',
+                         cpu.run(clear=False).regs2str_ex)
 
     def test_debug(self):
         out = io.StringIO()
