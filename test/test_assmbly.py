@@ -1,7 +1,12 @@
 import unittest
+import sys
+import os
 
-from executor import Executor
-import translator
+if __name__ == '__main__':
+    sys.path.append(os.path.abspath('..'))  # using test without package
+
+from intel4004_emu.executor import Executor
+from intel4004_emu import translator
 
 
 class TestASM(unittest.TestCase):

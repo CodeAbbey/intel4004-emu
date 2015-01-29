@@ -1,5 +1,5 @@
-import executor
-import translator
+from intel4004_emu import executor
+from intel4004_emu import translator
 
 
 class ExecutorExt(executor.Executor):

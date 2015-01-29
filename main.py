@@ -1,7 +1,8 @@
 import sys
-import translator
-import executor
-import consolex
+from intel4004_emu import translator
+from intel4004_emu import executor
+from intel4004_emu import consolex
+
 
 class EnhancedExecutor(executor.Executor, consolex.Consolex):
     
@@ -24,6 +25,7 @@ class EnhancedExecutor(executor.Executor, consolex.Consolex):
     def c_3fd(self):
         self.printMemory(4, 16)
 
+
 def loadSource():
     if len(sys.argv) < 2:
         raise Exception('Source file should be specified!')
@@ -33,9 +35,11 @@ def loadSource():
     f.close()
     return lines
 
+
 def fetchState(cpu):
     for i in range(2, len(sys.argv)):
         cpu.regs[i - 2] = int(sys.argv[i])
+
 
 def main():
     try:
@@ -47,4 +51,6 @@ def main():
     except Exception as e:
         sys.stderr.write("Error: %s\n" % e)
 
-main()
+
+if __name__ == '__main__':
+    main()

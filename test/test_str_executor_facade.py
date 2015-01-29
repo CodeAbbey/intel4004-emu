@@ -1,9 +1,13 @@
 import unittest
 
 import sys
+import os
 import io
 
-from str_executor_facade import StrExecutorFacade, StrExecutorFacadeDebug
+if __name__ == '__main__':
+    sys.path.append(os.path.abspath('..'))  # using test without package
+
+from intel4004_emu.str_executor_facade import StrExecutorFacade, StrExecutorFacadeDebug
 
 
 class TestStrExecutorFacade(unittest.TestCase):

@@ -2,8 +2,9 @@
 
 import sys
 import re
-import translator
-import executor
+from intel4004_emu import translator
+from intel4004_emu import executor
+
 
 class EnhancedExecutor(executor.Executor):
     
@@ -40,6 +41,7 @@ class EnhancedExecutor(executor.Executor):
     def c_3e0(self):
         v = (self.regs[0] << 4) + self.regs[1]
         sys.stdout.write(chr(v))
+
     
 def loadSource():
     text = sys.stdin.read().splitlines()
@@ -47,6 +49,7 @@ def loadSource():
         raise Exception('improper script invocation')
     inputCount = int(text[0].strip())
     return (text[inputCount + 1:], text[1 : inputCount + 1])
+
 
 def main():
     print "Content-Type: text/plain"
@@ -65,5 +68,6 @@ def main():
             cpu.printRegs()
     except Exception as e:
         print "Error: %s\n" % e
+
 
 main()
