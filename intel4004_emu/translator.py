@@ -4,6 +4,7 @@ class Instruction(object):
         'jcn': (2, 2),
         'fim': (2, 2),
         'jun': (2, 1),
+        'fin': (1, 1),
         'jms': (2, 1),
         'inc': (1, 1),
         'isz': (1, 2),
@@ -54,7 +55,10 @@ class Line(object):
 
     def splitParts(self):
         self.parts = self.text.split()
-
+    
+    def isCode(self):
+        return self.parts[0] != 'db'
+    
     def parseInstruction(self, addr):
         inTheLine = "in the line %d!" % self.index
         self.opcode = self.parts[0]
@@ -66,6 +70,12 @@ class Line(object):
         if len(self.parts) != params + 1:
             raise Exception("Expected %d parameters %s" % (params, inTheLine))
         self.size = size
+        self.addr = addr
+    
+    def parseData(self, addr):
+        #this should be made to work with hex and strings later
+        self.data = [int(x) for x in self.parts[1:]]
+        self.size = len(self.data)
         self.addr = addr
     
     def __str__(self):
@@ -96,7 +106,10 @@ def firstPass(lines):
             if len(line.text) == 0:
                 continue
         line.splitParts()
-        line.parseInstruction(addr)
+        if line.isCode():
+            line.parseInstruction(addr)
+        else:
+            line.parseData(addr)
         addr += line.size
         linesRes.append(line)
     return linesRes, labels
@@ -105,6 +118,10 @@ def firstPass(lines):
 def secondPass(lines, labels):
     prg = {}
     for line in lines:
+        if not line.isCode():
+            for offset in range(len(line.data)):
+                prg['d' + str(line.addr + offset)] = line.data[offset]
+            continue
         cntParams = len(line.params)
         for j in range(cntParams):
             p = line.params[j]

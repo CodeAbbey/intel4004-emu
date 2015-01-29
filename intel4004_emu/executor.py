@@ -10,6 +10,7 @@ class Executor(object):
         self.stack = []
     
     def run(self, prg):
+        self.prg = prg
         while self.ip in prg:
             self.step(prg[self.ip])
     
@@ -62,6 +63,16 @@ class Executor(object):
         v = params[1]
         self.regs[p] = (v >> 4) & 0xF
         self.regs[p + 1] = v & 0xF
+    
+    def i_fin(self, params):
+        p = params[0] & 0xE
+        addr = 'd' + str(self.regs[0] * 16 + self.regs[1])
+        if addr in self.prg:
+            v = self.prg[addr]
+            self.regs[p] = (v >> 4) & 0xF
+            self.regs[p + 1] = v & 0xF
+        else:
+            raise Exception("Attempt to read the data from uninitialized ROM address")
             
     def i_iac(self, params):
         self.acc = (self.acc + 1) & 0xF
