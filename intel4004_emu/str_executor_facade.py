@@ -4,7 +4,7 @@ from intel4004_emu import translator
 
 class ExecutorExt(executor.Executor):
     def __init__(self):
-        super().__init__()
+        super(executor.Executor, self).__init__()
         self.console_input = []
         self.console_output = []
 
