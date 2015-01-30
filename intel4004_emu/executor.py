@@ -72,7 +72,7 @@ class Executor(object):
             self.regs[p] = (v >> 4) & 0xF
             self.regs[p + 1] = v & 0xF
         else:
-            raise Exception("Attempt to read the data from uninitialized ROM address")
+            raise Exception("Attempt to read the data from uninitialized ROM address %s" % addr[1:])
             
     def i_iac(self, params):
         self.acc = (self.acc + 1) & 0xF

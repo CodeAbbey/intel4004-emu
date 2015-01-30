@@ -54,7 +54,33 @@ class Line(object):
         return label
 
     def splitParts(self):
-        self.parts = self.text.split()
+        self.parts = []
+        s = self.text + ' '
+        n = len(s)
+        p1 = 0
+        while p1 < n:
+            if s[p1].isspace():
+                p1 += 1
+                continue
+            if s[p1] == ';':
+                break
+            if s[p1] == '\'':
+                p2 = s.find('\'', p1 + 1)
+                if p2 < 0:
+                    raise "Unmatched quote in the line %" % self.index
+                self.parts.append(s[p1 + 1 : p2])
+                p1 = p2 + 1
+            else:
+                p2 = p1
+                while not s[p2].isspace():
+                    p2 += 1
+                v = s[p1:p2]
+                if v.isdigit():
+                    v = int(v)
+                elif v[0] == '$':
+                    v = int(v[1:], 16)
+                self.parts.append(v)
+                p1 = p2
     
     def isCode(self):
         return self.parts[0] != 'db'
@@ -73,8 +99,13 @@ class Line(object):
         self.addr = addr
     
     def parseData(self, addr):
-        #this should be made to work with hex and strings later
-        self.data = [int(x) for x in self.parts[1:]]
+        self.data = []
+        for p in self.parts[1:]:
+            if type(p) is int:
+                self.data.append(p)
+            else:
+                for x in p:
+                    self.data.append(ord(x))
         self.size = len(self.data)
         self.addr = addr
     
@@ -89,9 +120,6 @@ def prepareLines(src):
     count = len(src)
     for i in range(count):
         line = Line(i + 1, src[i])
-        line.stripComment()
-        if len(line.text) == 0:
-            continue
         lines.append(line)
     return lines
 
@@ -103,9 +131,9 @@ def firstPass(lines):
         label = line.stripLabel()
         if label != None:
             labels[label] = addr
-            if len(line.text) == 0:
-                continue
         line.splitParts()
+        if len(line.parts) == 0:
+            continue
         if line.isCode():
             line.parseInstruction(addr)
         else:
@@ -125,14 +153,11 @@ def secondPass(lines, labels):
         cntParams = len(line.params)
         for j in range(cntParams):
             p = line.params[j]
-            if p in labels:
-                line.params[j] = labels[p]
-            elif p[0] == 'r':
-                line.params[j] = int(p[1:])
-            elif p[0] == '$':
-                line.params[j] = int(p[1:], 16)
-            elif p.isdigit():
-                line.params[j] = int(p)
+            if type(p) is str:
+                if p in labels:
+                    line.params[j] = labels[p]
+                elif p[0] == 'r':
+                    line.params[j] = int(p[1:])
         prg[line.addr] = line
     return prg
 

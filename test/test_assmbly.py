@@ -100,6 +100,15 @@ class TestASM(unittest.TestCase):
             '''
         self.assertEqual('9 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0', self.run_assembly(asm))
 
+    def test_fetch_indirect(self):
+        asm = '''
+            jun start
+            data_block: db $39
+            start:
+            fim r0 data_block
+            fin r2
+            '''
+        self.assertEqual('0 2 3 9 0 0 0 0 0 0 0 0 0 0 0 0', self.run_assembly(asm))
 
 if __name__ == '__main__':
     unittest.main()
