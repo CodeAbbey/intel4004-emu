@@ -40,16 +40,14 @@ class Line(object):
         self.index = index
         self.text = text.strip().lower()
 
-    def stripComment(self):
-        pos = self.text.find(';')
-        if pos >= 0:
-            self.text = self.text[:pos].strip()
-
     def stripLabel(self):
         pos = self.text.find(':')
         if pos < 0:
             return None
         label = self.text[:pos]
+        for c in label:
+            if not c.isalpha() and not c.isdigit() and c != '_':
+                return None
         self.text = self.text[pos + 1:].strip()
         return label
 
