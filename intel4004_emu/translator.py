@@ -38,7 +38,7 @@ class Line(object):
     
     def __init__(self, index, text):
         self.index = index
-        self.text = text.strip().lower()
+        self.text = text.strip()
 
     def stripLabel(self):
         pos = self.text.find(':')
@@ -72,7 +72,7 @@ class Line(object):
                 p2 = p1
                 while not s[p2].isspace():
                     p2 += 1
-                v = s[p1:p2]
+                v = s[p1:p2].lower()
                 if v.isdigit():
                     v = int(v)
                 elif v[0] == '$':
