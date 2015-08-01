@@ -1,6 +1,6 @@
 # Intel 4004 emulator
 
-It is a Python emulator of Intel 4004 cpu
+It is a Python emulator of Intel 4004 cpu - created for solving [these programming puzzles](http://www.codeabbey.com/index/task_list/assembly).
 
 It could be run from command line like this:
 
