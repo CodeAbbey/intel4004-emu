@@ -39,6 +39,8 @@ class Line(object):
     def __init__(self, index, text):
         self.index = index
         self.text = text.strip()
+        self.codeTop = 0
+        self.dataTop = 0
 
     def stripLabel(self):
         pos = self.text.find(':')
@@ -143,7 +145,9 @@ def firstPass(lines):
 
 def secondPass(lines, labels):
     prg = {}
+    top = 0
     for line in lines:
+        top = max(top, line.addr + line.size)
         if not line.isCode():
             for offset in range(len(line.data)):
                 prg['d' + str(line.addr + offset)] = line.data[offset]
@@ -157,6 +161,7 @@ def secondPass(lines, labels):
                 elif p[0] == 'r':
                     line.params[j] = int(p[1:])
         prg[line.addr] = line
+        prg['_top'] = top
     return prg
 
 def translate(src):

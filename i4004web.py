@@ -2,9 +2,12 @@
 
 import sys
 import re
-from intel4004_emu import translator
-from intel4004_emu import executor
-
+try:
+    import translator
+    import executor
+except ImportError:
+    from intel4004_emu import translator
+    from intel4004_emu import executor
 
 class EnhancedExecutor(executor.Executor):
     
@@ -35,13 +38,12 @@ class EnhancedExecutor(executor.Executor):
     def c_3f0(self):
         v = 0 if self.inputCount >= len(self.inputData) else ord(self.inputData[self.inputCount])
         self.inputCount += 1
-        self.regs[1] = v & 0xF
-        self.regs[0] = v >> 4
+        self.regs[3] = v & 0xF
+        self.regs[2] = v >> 4
     
     def c_3e0(self):
-        v = (self.regs[0] << 4) + self.regs[1]
+        v = (self.regs[2] << 4) + self.regs[3]
         sys.stdout.write(chr(v))
-
     
 def loadSource():
     text = sys.stdin.read().splitlines()
@@ -50,14 +52,16 @@ def loadSource():
     inputCount = int(text[0].strip())
     return (text[inputCount + 1:], text[1 : inputCount + 1])
 
-
 def main():
-    print "Content-Type: text/plain"
-    print ''
-
+    print("Content-Type: text/plain")
+    headerSent = False
+    
     try:
         src, inputData = loadSource()
         prg = translator.translate(src)
+        print("Program-Size: " + str(prg['_top']))
+        print('')
+        headerSent = True
         cpu = EnhancedExecutor()
         if len(inputData) == 1:
             if cpu.fetchState(inputData[0]):
@@ -67,7 +71,8 @@ def main():
         if len(inputData) == 0:
             cpu.printRegs()
     except Exception as e:
-        print "Error: %s\n" % e
-
+        if not headerSent:
+            print('')
+        print("Error: %s\n" % e)
 
 main()
