@@ -19,6 +19,11 @@ class Executor(object):
         cmd = getattr(self, 'i_' + line.opcode)
         cmd(line.params)
     
+    def jump(self, param):
+        if type(param) != int:
+            raise ValueError('Label address not resolved: ' + str(param))
+        self.ip = param
+    
     def i_add(self, params):
         p = params[0]
         self.acc = self.acc + self.regs[p] + self.cy
@@ -31,7 +36,7 @@ class Executor(object):
         self.acc &= 0xF
         
     def i_bbl(self, params):
-        self.ip = self.stack.pop()
+        self.jump(self.stack.pop())
         self.acc = params[0] & 0xF
     
     def i_clb(self, params):
@@ -89,13 +94,13 @@ class Executor(object):
             return
         elif op == 'an' and self.acc == 0:
             return
-        self.ip = params[1]
+        self.jump(params[1])
     
     def i_jms(self, params):
         addr = params[0]
         if addr < 0x300:
             self.stack.append(self.ip)
-            self.ip = params[0]
+            self.jump(params[0])
         else:
             try:
                 subr = getattr(self, "c_%0.3x" % addr)
@@ -104,7 +109,7 @@ class Executor(object):
             subr()
     
     def i_jun(self, params):
-        self.ip = params[0]
+        self.jump(params[0])
     
     def i_inc(self, params):
         p = params[0]
@@ -114,7 +119,7 @@ class Executor(object):
         p = params[0]
         self.regs[p] = (self.regs[p] + 1) & 0xF
         if self.regs[p] != 0:
-            self.ip = params[1]
+            self.jump(params[1])
     
     def i_ld(self, params):
         self.acc = self.regs[params[0]]
