@@ -128,7 +128,7 @@ def firstPass(lines):
     for line in lines:
         label = line.stripLabel()
         if label != None:
-            labels[label] = addr
+            labels[label.lower()] = addr
         line.splitParts()
         if len(line.parts) == 0:
             continue

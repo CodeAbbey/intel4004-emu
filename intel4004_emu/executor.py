@@ -21,7 +21,7 @@ class Executor(object):
     
     def jump(self, param):
         if type(param) != int:
-            raise ValueError('Label address not resolved: ' + str(param))
+            raise Exception('Label address not resolved: ' + str(param))
         self.ip = param
     
     def i_add(self, params):
@@ -98,6 +98,8 @@ class Executor(object):
     
     def i_jms(self, params):
         addr = params[0]
+        if type(addr) != int:
+            raise Exception('Subroutine address not resolved: ' + str(addr))
         if addr < 0x300:
             self.stack.append(self.ip)
             self.jump(params[0])
