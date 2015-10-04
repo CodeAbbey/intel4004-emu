@@ -154,7 +154,7 @@ class Executor(object):
     
     def i_sub(self, params):
         p = params[0]
-        self.acc = self.acc + 16 - self.regs[p] - self.cy
+        self.acc = self.acc + self.cy + (self.regs[p] ^ 0xF)
         self.cy = self.acc >> 4
         self.acc &= 0xF
     
