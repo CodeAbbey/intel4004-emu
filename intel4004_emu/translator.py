@@ -7,7 +7,7 @@ class Instruction(object):
         'fin': (1, 1),
         'jms': (2, 1),
         'inc': (1, 1),
-        'isz': (1, 2),
+        'isz': (2, 2),
         'add': (1, 1),
         'sub': (1, 1),
         'ld': (1, 1),
