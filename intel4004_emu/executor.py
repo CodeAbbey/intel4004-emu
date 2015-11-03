@@ -53,11 +53,11 @@ class Executor(object):
         self.cy ^= 1
     
     def i_daa(self, params):
-        if self.acc >= 10:
+        if self.acc >= 10 or self.cy:
+            self.acc += 6
+        if self.acc >= 16:
             self.cy = 1
-            self.acc -= 10
-        else:
-            self.cy = 0
+            self.acc -= 16
     
     def i_dac(self, params):
         self.acc = (self.acc - 1) & 0xF
