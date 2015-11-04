@@ -46,33 +46,41 @@ class EnhancedExecutor(executor.Executor):
         sys.stdout.write(chr(v))
     
 def loadSource():
-    text = sys.stdin.read().splitlines()
+    texts = sys.stdin.read()
+    text = texts.splitlines()
     if len(text) < 3:
         raise Exception('improper script invocation')
     inputCount = int(text[0].strip())
     return (text[inputCount + 1:], text[1 : inputCount + 1])
 
 def main():
+    from StringIO import StringIO
+    import sys
     print("Content-Type: text/plain")
-    headerSent = False
     
     try:
         src, inputData = loadSource()
         prg = translator.translate(src)
         print("Program-Size: " + str(prg['_top']))
-        print('')
-        headerSent = True
         cpu = EnhancedExecutor()
         if len(inputData) == 1:
             if cpu.fetchState(inputData[0]):
                 inputData = []
         cpu.inputData = '\n'.join(inputData)
+        old_stdout = sys.stdout
+        my_stdout = StringIO()
+        sys.stdout = my_stdout
         cpu.run(prg)
+        sys.stdout = old_stdout
+        print("Program-Cycles: " + str(cpu.cycles))
+        print('')
+        result = my_stdout.getvalue()
+        sys.stdout.write(result)
         if len(inputData) == 0:
             cpu.printRegs()
     except Exception as e:
-        if not headerSent:
-            print('')
+        sys.stdout = old_stdout
+        print('')
         print("Error: %s\n" % e)
 
 main()
