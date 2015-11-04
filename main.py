@@ -8,7 +8,7 @@ class EnhancedExecutor(executor.Executor, consolex.Consolex):
     
     def printRegs(self):
         print(' '.join([str(r) for r in self.regs]))
-        print("acc=%d, cy=%d, ip=%d" % (self.acc, self.cy, self.ip))
+        print("acc=%d, cy=%d, ip=%d, dp=%d, cycles=%d" % (self.acc, self.cy, self.ip, self.dp, self.cycles))
     
     def printMemory(self, rows, cols):
         for row in range(rows):

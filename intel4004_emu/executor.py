@@ -8,6 +8,7 @@ class Executor(object):
         self.dp = 0
         self.ip = 0
         self.stack = []
+        self.cycles = 0
     
     def run(self, prg):
         self.prg = prg
@@ -18,6 +19,7 @@ class Executor(object):
         self.ip += line.size
         cmd = getattr(self, 'i_' + line.opcode)
         cmd(line.params)
+        self.cycles += line.size
     
     def jump(self, param):
         if type(param) != int:
@@ -76,6 +78,7 @@ class Executor(object):
             v = self.prg[addr]
             self.regs[p] = (v >> 4) & 0xF
             self.regs[p + 1] = v & 0xF
+            self.cycles += 1
         else:
             raise Exception("Attempt to read the data from uninitialized ROM address %s" % addr[1:])
             
