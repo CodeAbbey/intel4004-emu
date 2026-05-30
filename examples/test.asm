@@ -2,13 +2,13 @@
 ;where N is some value
 ;program will calculate sum of 1 + 2 + ... + N
 ;in registers r2 and r3
-;by default N = 5
+;by default N = 13, result should be 11 5 (i.e 91)
 
 ldm 0               ; acc = 0
 add r0              ; acc += r0
 jcn an main_loop    ; if acc == 0 jump to main_loop
 
-ldm 5               ; acc = 5
+ldm 13              ; acc = 13
 xch r0              ; store it to r0
 
 main_loop:

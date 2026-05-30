@@ -13,8 +13,8 @@ class EnhancedExecutor(executor.Executor, consolex.Consolex):
     def printMemory(self, rows, cols):
         for row in range(rows):
             for col in range(cols):
-                print "%X" % self.memory[row * cols + col],
-            print
+                print("%X" % self.memory[row * cols + col], end='')
+            print()
 
     def c_3ff(self):
         self.printRegs()

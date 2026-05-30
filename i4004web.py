@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#!/usr/bin/env python3
 
 import sys
 import re
@@ -54,7 +54,7 @@ def loadSource():
     return (text[inputCount + 1:], text[1 : inputCount + 1])
 
 def main():
-    from StringIO import StringIO
+    from io import StringIO
     import sys
     print("Content-Type: text/plain")
     
