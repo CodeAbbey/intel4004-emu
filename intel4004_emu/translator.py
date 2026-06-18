@@ -95,6 +95,8 @@ class Line(object):
             raise Exception("Unknown instruction %s %s" % (self.opcode, inTheLine))
         if len(self.parts) != params + 1:
             raise Exception("Expected %d parameters %s" % (params, inTheLine))
+        if self.opcode=='ld' and not (type(self.params[0]) is str) :
+            raise Exception("Expected register parameter for ld instruction  %s" % ( inTheLine))
         self.size = size
         self.addr = addr
     
